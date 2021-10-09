@@ -1,5 +1,14 @@
 -- mod-version:2 -- lite-xl 2.0
+local command = require "core.command"
+local common = require "core.common"
+local config = require "core.config"
+local core = require "core"
+local Doc = require "core.doc"
+local RootView = require "core.rootview"
+local style = require "core.style"
 local syntax = require "core.syntax"
+local View = require "core.view"
+local keymap = require "core.keymap"
 
 local patterns = {
     {pattern = {"#=", "=#"}, type = "comment"}, -- Multiline comment
@@ -50,9 +59,48 @@ for _, literal in ipairs(literals) do
 end
 
 syntax.add {
-    files = {"%.jl$"},
-    headers = "^#!.*[ /]julia",
-    comment = "#",
-     patterns = patterns,
-    symbols = symbols
+    files = {"%.jl$"}, headers = "^#!.*[ /]julia", comment = "#", patterns = patterns, symbols = symbols
 }
+
+local on_text_input = RootView.on_text_input
+local on_text_remove = Doc.remove
+local update = RootView.update
+local draw = RootView.draw
+
+RootView.on_text_input = function(...)
+    on_text_input(...)
+    -- core.log("aaaaa")
+end
+
+Doc.remove = function(self, line1, col1, line2, col2)
+    on_text_remove(self, line1, col1, line2, col2)
+    -- core.log("bbbbb")
+end
+
+-- RootView.update = function(...)
+--    update(...)
+--     core.log("cccccc")
+-- end
+
+-- RootView.draw = function(...)
+--     draw(...)
+--     core.log("dddddd")
+-- end
+
+command.add("core.docview", {
+    ["julia:type-an-alpha"] = function()
+        local doc = core.active_view.doc
+        local line, col = doc:get_selection()
+        core.log("col: ", col)
+        local text = "α"
+        local N = #"\\alpha"
+        core.log("remove")
+        doc:remove(line, col, line, col - N)
+        core.log("insert")
+        doc:insert(line, col, text)
+        core.log("set_selection")
+        doc:set_selection(line,  col + #text - N)
+    end
+})
+
+keymap.add {["ctrl+shift+\\"] = "julia:type-an-alpha"}
