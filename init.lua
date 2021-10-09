@@ -88,19 +88,20 @@ end
 -- end
 
 command.add("core.docview", {
-    ["julia:type-an-alpha"] = function()
+    ["julia:substitute"] = function()
         local doc = core.active_view.doc
         local line, col = doc:get_selection()
-        core.log("col: ", col)
+        local line_text = doc:get_text(line, 0, line, col)
+        local text_to_substitute = string.match(line_text, "(\\.-)$")
+        core.log(text_to_substitute)
         local text = "α"
-        local N = #"\\alpha"
         core.log("remove")
-        doc:remove(line, col, line, col - N)
+        doc:remove(line, col, line, col - #text_to_substitute)
         core.log("insert")
         doc:insert(line, col, text)
         core.log("set_selection")
-        doc:set_selection(line,  col + #text - N)
+        doc:set_selection(line, col + #text - #text_to_substitute)
     end
 })
 
-keymap.add {["ctrl+shift+\\"] = "julia:type-an-alpha"}
+keymap.add {["ctrl+shift+\\"] = "julia:substitute"}
