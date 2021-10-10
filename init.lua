@@ -9,6 +9,9 @@ local style = require "core.style"
 local syntax = require "core.syntax"
 local View = require "core.view"
 local keymap = require "core.keymap"
+local autocomplete = require "plugins.autocomplete"
+local substitutions = require "plugins.language_julia.substitution_data"
+
 
 local patterns = {
     {pattern = {"#=", "=#"}, type = "comment"}, -- Multiline comment
@@ -18,12 +21,12 @@ local patterns = {
     {pattern = "%-%->", type = "operator"}, -- Arrow
     {pattern = "=>", type = "operator"}, -- Arrow
     {pattern = "<:", type = "operator"}, -- Subtype
-    {pattern = "%f[:]:%w+", type = "string"}, -- Symbol
     {pattern = "::%f[%w]", type = "operator"}, -- Typehint
     {
         pattern = "[" ..
-            table.concat({"%+", "%-", "=", "/", "%*", "%^", ":"}, "") .. "]", type = "operator"
+        table.concat({"%+", "%-", "=", "/", "%*", "%^", ":","<","∈"}, "") .. "]", type = "operator"
     }, -- Operator
+    {pattern = "%f[:]:%w+", type = "string"}, -- Symbol
     {pattern = "%-?0b[01]+", type = "number"}, -- Binary number
     {pattern = "%-?0x[%dabcdef]+", type = "number"}, -- Hex number
     {pattern = "%-?0o[0-7]+", type = "number"}, -- Octal number
@@ -41,7 +44,7 @@ local patterns = {
 }
 
 local keywords = {
-    "abstract%s+type", "baremodule", "begin", "break", "catch", "const", "continue", "do", "else", "elseif", "end",
+  "for",  "abstract%s+type", "baremodule", "begin", "break", "catch", "const", "continue", "do", "else", "elseif", "end",
     "export", "finally", "function", "global", "if", "import", "Inf", "let", "local", "macro", "module",
     "mutable%s+struct", "NaN", "primitive%s+type", "quote", "return", "struct", "try", "using", "where", "while"
 }
@@ -62,46 +65,36 @@ syntax.add {
     files = {"%.jl$"}, headers = "^#!.*[ /]julia", comment = "#", patterns = patterns, symbols = symbols
 }
 
-local on_text_input = RootView.on_text_input
-local on_text_remove = Doc.remove
-local update = RootView.update
-local draw = RootView.draw
+-- Substitutions
 
-RootView.on_text_input = function(...)
-    on_text_input(...)
-    -- core.log("aaaaa")
+local function substitute_symbol(_index, suggestion)
+    local doc = core.active_view.doc
+    local line, col = doc:get_selection()
+    local line_text = doc:get_text(line, 1, line, col)
+
+    -- Find the text to replace
+    -- Try to find the last string of characters after a backslash
+    -- Otherwise find the last string of characters after a whitespace character
+    -- Otherwise return the entire line
+    local partial = string.match(line_text, "(\\%S-)$") or
+                        string.match(line_text, "%s(%S-)$") or line_text
+
+    -- Get the text to replace it with
+    local text = suggestion["info"]
+
+    -- Perform the substitution
+    doc:insert(line, col, text)
+    doc:remove(line, col, line, col - #partial)
+    doc:set_selection(line, col + #text - #partial)
+
+    -- Return true because the substitution has already happened
+    return true
 end
 
-Doc.remove = function(self, line1, col1, line2, col2)
-    on_text_remove(self, line1, col1, line2, col2)
-    -- core.log("bbbbb")
+local symbols = {}
+
+for name, data in pairs(substitutions) do
+    symbols[name] = {        ["info"] = data["character"], ["desc"] = data["name"], ["onselect"] = substitute_symbol    }
 end
 
--- RootView.update = function(...)
---    update(...)
---     core.log("cccccc")
--- end
-
--- RootView.draw = function(...)
---     draw(...)
---     core.log("dddddd")
--- end
-
-command.add("core.docview", {
-    ["julia:substitute"] = function()
-        local doc = core.active_view.doc
-        local line, col = doc:get_selection()
-        local line_text = doc:get_text(line, 0, line, col)
-        local text_to_substitute = string.match(line_text, "(\\.-)$")
-        core.log(text_to_substitute)
-        local text = "α"
-        core.log("remove")
-        doc:remove(line, col, line, col - #text_to_substitute)
-        core.log("insert")
-        doc:insert(line, col, text)
-        core.log("set_selection")
-        doc:set_selection(line, col + #text - #text_to_substitute)
-    end
-})
-
-keymap.add {["ctrl+shift+\\"] = "julia:substitute"}
+autocomplete.add {name = "julia", items = symbols}
