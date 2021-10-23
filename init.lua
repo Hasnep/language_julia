@@ -62,8 +62,7 @@ local function substitute_symbol(_index, suggestion)
     -- Try to find the last string of characters after a backslash
     -- Otherwise find the last string of characters after a whitespace character
     -- Otherwise return the entire line
-    local partial = string.match(line_text, "(\\%S-)$") or
-                        string.match(line_text, "%s(%S-)$") or line_text
+    local partial = string.match(line_text, "(\\%S-)$") or string.match(line_text, "%s(%S-)$") or line_text
 
     -- Get the text to replace it with
     local text = suggestion["info"]
