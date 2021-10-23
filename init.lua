@@ -1,14 +1,6 @@
 -- mod-version:2 -- lite-xl 2.0
-local command = require "core.command"
-local common = require "core.common"
-local config = require "core.config"
 local core = require "core"
-local Doc = require "core.doc"
-local RootView = require "core.rootview"
-local style = require "core.style"
 local syntax = require "core.syntax"
-local View = require "core.view"
-local keymap = require "core.keymap"
 local autocomplete = require "plugins.autocomplete"
 local substitutions = require "plugins.language_julia.substitution_data"
 local operators_regex_pattern = require "plugins.language_julia.substitution_data"
@@ -17,7 +9,7 @@ local patterns = {
     {pattern = {"#=", "=#"}, type = "comment"}, -- Multiline comment
     {pattern = {"#", "\n"}, type = "comment"}, -- Single line comment
     {pattern = "::%f[%w]", type = "operator"}, -- Typehint
-    {regex = operators_regex_pattern, type = "operator" }, -- Operator
+    {regex = operators_regex_pattern, type = "operator"}, -- Operator
     {pattern = "%f[:]:%w+", type = "string"}, -- Symbol
     {pattern = "%-?0b[01]+", type = "number"}, -- Binary number
     {pattern = "%-?0x[%dabcdef]+", type = "number"}, -- Hex number
@@ -36,25 +28,27 @@ local patterns = {
 }
 
 local keywords = {
-  "for",  "abstract%s+type", "baremodule", "begin", "break", "catch", "const", "continue", "do", "else", "elseif", "end",
-    "export", "finally", "function", "global", "if", "import", "Inf", "let", "local", "macro", "module",
-    "mutable%s+struct", "NaN", "primitive%s+type", "quote", "return", "struct", "try", "using", "where", "while"
+    "for", "abstract%s+type", "baremodule", "begin", "break", "catch", "const",
+    "continue", "do", "else", "elseif", "end", "export", "finally", "function",
+    "global", "if", "import", "Inf", "let", "local", "macro", "module",
+    "mutable%s+struct", "NaN", "primitive%s+type", "quote", "return", "struct",
+    "try", "using", "where", "while"
 }
 
 local literals = {"true", "false", "nothing", "missing"}
 
 local symbols = {}
 
-for _, keyword in ipairs(keywords) do
-    symbols[keyword] = "keyword"
-end
+for _, keyword in ipairs(keywords) do symbols[keyword] = "keyword" end
 
-for _, literal in ipairs(literals) do
-    symbols[literal] = "literal"
-end
+for _, literal in ipairs(literals) do symbols[literal] = "literal" end
 
 syntax.add {
-    files = {"%.jl$"}, headers = "^#!.*[ /]julia", comment = "#", patterns = patterns, symbols = symbols
+    files = {"%.jl$"},
+    headers = "^#!.*[ /]julia",
+    comment = "#",
+    patterns = patterns,
+    symbols = symbols
 }
 
 -- Substitutions
@@ -86,7 +80,14 @@ end
 local symbols = {}
 
 for name, data in pairs(substitutions) do
-    symbols[name] = {        ["info"] = data["character"], ["desc"] = data["name"], ["onselect"] = substitute_symbol    }
+    symbols[name] = {
+        ["info"] = data["character"],
+        ["desc"] = data["name"],
+        ["onselect"] = substitute_symbol
+    }
 end
 
-autocomplete.add {name = "julia", items = symbols}
+autocomplete.add {
+    name = "julia",
+    items = symbols
+}
