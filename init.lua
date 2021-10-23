@@ -28,11 +28,8 @@ local patterns = {
 }
 
 local keywords = {
-    "for", "abstract%s+type", "baremodule", "begin", "break", "catch", "const",
-    "continue", "do", "else", "elseif", "end", "export", "finally", "function",
-    "global", "if", "import", "Inf", "let", "local", "macro", "module",
-    "mutable%s+struct", "NaN", "primitive%s+type", "quote", "return", "struct",
-    "try", "using", "where", "while"
+    "abstract%s+type", "baremodule", "begin", "break", "catch", "const", "continue", "do", "else", "elseif", "end", "export", "finally", "for", "function", "global", "if",
+    "import", "Inf", "let", "local", "macro", "module", "mutable%s+struct", "NaN", "primitive%s+type", "quote", "return", "struct", "try", "using", "where", "while"
 }
 
 local literals = {"true", "false", "nothing", "missing"}
