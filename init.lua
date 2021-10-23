@@ -11,21 +11,13 @@ local View = require "core.view"
 local keymap = require "core.keymap"
 local autocomplete = require "plugins.autocomplete"
 local substitutions = require "plugins.language_julia.substitution_data"
-
+local operators_regex_pattern = require "plugins.language_julia.substitution_data"
 
 local patterns = {
     {pattern = {"#=", "=#"}, type = "comment"}, -- Multiline comment
     {pattern = {"#", "\n"}, type = "comment"}, -- Single line comment
-    {pattern = "%->", type = "operator"}, -- Arrow
-    {pattern = "<%-", type = "operator"}, -- Arrow
-    {pattern = "%-%->", type = "operator"}, -- Arrow
-    {pattern = "=>", type = "operator"}, -- Arrow
-    {pattern = "<:", type = "operator"}, -- Subtype
     {pattern = "::%f[%w]", type = "operator"}, -- Typehint
-    {
-        pattern = "[" ..
-        table.concat({"%+", "%-", "=", "/", "%*", "%^", ":","<","∈"}, "") .. "]", type = "operator"
-    }, -- Operator
+    {regex = operators_regex_pattern, type = "operator" }, -- Operator
     {pattern = "%f[:]:%w+", type = "string"}, -- Symbol
     {pattern = "%-?0b[01]+", type = "number"}, -- Binary number
     {pattern = "%-?0x[%dabcdef]+", type = "number"}, -- Hex number
