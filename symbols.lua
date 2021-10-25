@@ -35,7 +35,7 @@ local symbols = {
     ["true"] = "literal",
     ["false"] = "literal",
     ["nothing"] = "literal",
-    ["missing"] = "literal",
+    ["missing"] = "literal"
 }
 
 return symbols
