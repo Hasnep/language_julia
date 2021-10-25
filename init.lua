@@ -41,10 +41,10 @@ local function substitute_symbol(_index, suggestion)
     return true
 end
 
-local symbols = {}
+local autocomplete_items = {}
 
 for name, data in pairs(substitutions) do
-    symbols[name] = {
+    autocomplete_items[name] = {
         ["info"] = data["character"],
         ["desc"] = data["name"],
         ["onselect"] = substitute_symbol
@@ -53,5 +53,5 @@ end
 
 autocomplete.add {
     name = "julia",
-    items = symbols
+    items = autocomplete_items
 }
