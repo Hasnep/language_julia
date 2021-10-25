@@ -3,18 +3,10 @@ local core = require "core"
 local syntax = require "core.syntax"
 local autocomplete = require "plugins.autocomplete"
 local substitutions = require "plugins.language_julia.substitutions"
-
 local patterns = require "plugins.language_julia.patterns"
+local symbols = require "plugins.language_julia.symbols"
 
-local keywords = { "abstract%s+type", "baremodule", "begin", "break", "catch", "const", "continue", "do", "else", "elseif", "end", "export", "finally", "for", "function", "global", "if", "import", "Inf", "let", "local", "macro", "module", "mutable%s+struct", "NaN", "primitive%s+type", "quote", "return", "struct", "try", "using", "where", "while" }
-
-local literals = {"true", "false", "nothing", "missing"}
-
-local symbols = {}
-
-for _, keyword in ipairs(keywords) do symbols[keyword] = "keyword" end
-
-for _, literal in ipairs(literals) do symbols[literal] = "literal" end
+-- Syntax highlighting
 
 syntax.add {
     files = {"%.jl$"},
