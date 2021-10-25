@@ -1,4 +1,4 @@
-local operators_regex_pattern = require "plugins.language_julia.substitution_data"
+local operators_regex_pattern = require "plugins.language_julia.substitutions"
 
 local patterns = {
     { pattern = {"#=", "=#"}, type = "comment" }, -- Multiline comment
