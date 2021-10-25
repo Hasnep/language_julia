@@ -1,5 +1,17 @@
 -- mod-version:2 -- lite-xl 2.0
+local command = require "core.command"
+local common = require "core.common"
+local config = require "core.config"
+local core = require "core"
+local Doc = require "core.doc"
+local RootView = require "core.rootview"
+local style = require "core.style"
 local syntax = require "core.syntax"
+local View = require "core.view"
+local keymap = require "core.keymap"
+local autocomplete = require "plugins.autocomplete"
+local substitutions = require "plugins.language_julia.substitution_data"
+
 
 local patterns = {
     {pattern = {"#=", "=#"}, type = "comment"}, -- Multiline comment
@@ -9,12 +21,12 @@ local patterns = {
     {pattern = "%-%->", type = "operator"}, -- Arrow
     {pattern = "=>", type = "operator"}, -- Arrow
     {pattern = "<:", type = "operator"}, -- Subtype
-    {pattern = "%f[:]:%w+", type = "string"}, -- Symbol
     {pattern = "::%f[%w]", type = "operator"}, -- Typehint
     {
         pattern = "[" ..
-            table.concat({"%+", "%-", "=", "/", "%*", "%^", ":"}, "") .. "]", type = "operator"
+        table.concat({"%+", "%-", "=", "/", "%*", "%^", ":","<","∈"}, "") .. "]", type = "operator"
     }, -- Operator
+    {pattern = "%f[:]:%w+", type = "string"}, -- Symbol
     {pattern = "%-?0b[01]+", type = "number"}, -- Binary number
     {pattern = "%-?0x[%dabcdef]+", type = "number"}, -- Hex number
     {pattern = "%-?0o[0-7]+", type = "number"}, -- Octal number
@@ -32,7 +44,7 @@ local patterns = {
 }
 
 local keywords = {
-    "abstract%s+type", "baremodule", "begin", "break", "catch", "const", "continue", "do", "else", "elseif", "end",
+  "for",  "abstract%s+type", "baremodule", "begin", "break", "catch", "const", "continue", "do", "else", "elseif", "end",
     "export", "finally", "function", "global", "if", "import", "Inf", "let", "local", "macro", "module",
     "mutable%s+struct", "NaN", "primitive%s+type", "quote", "return", "struct", "try", "using", "where", "while"
 }
@@ -50,9 +62,39 @@ for _, literal in ipairs(literals) do
 end
 
 syntax.add {
-    files = {"%.jl$"},
-    headers = "^#!.*[ /]julia",
-    comment = "#",
-     patterns = patterns,
-    symbols = symbols
+    files = {"%.jl$"}, headers = "^#!.*[ /]julia", comment = "#", patterns = patterns, symbols = symbols
 }
+
+-- Substitutions
+
+local function substitute_symbol(_index, suggestion)
+    local doc = core.active_view.doc
+    local line, col = doc:get_selection()
+    local line_text = doc:get_text(line, 1, line, col)
+
+    -- Find the text to replace
+    -- Try to find the last string of characters after a backslash
+    -- Otherwise find the last string of characters after a whitespace character
+    -- Otherwise return the entire line
+    local partial = string.match(line_text, "(\\%S-)$") or
+                        string.match(line_text, "%s(%S-)$") or line_text
+
+    -- Get the text to replace it with
+    local text = suggestion["info"]
+
+    -- Perform the substitution
+    doc:insert(line, col, text)
+    doc:remove(line, col, line, col - #partial)
+    doc:set_selection(line, col + #text - #partial)
+
+    -- Return true because the substitution has already happened
+    return true
+end
+
+local symbols = {}
+
+for name, data in pairs(substitutions) do
+    symbols[name] = {        ["info"] = data["character"], ["desc"] = data["name"], ["onselect"] = substitute_symbol    }
+end
+
+autocomplete.add {name = "julia", items = symbols}
