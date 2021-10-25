@@ -1,4 +1,4 @@
-local substitution_data = {
+local substitutions = {
     ["\\exclamdown"] = {["character"] = "¡", ["name"] = "Inverted Exclamation Mark"},
     ["\\sterling"] = {["character"] = "£", ["name"] = "Pound Sign"},
     ["\\yen"] = {["character"] = "¥", ["name"] = "Yen Sign"},
@@ -3329,4 +3329,4 @@ local substitution_data = {
     ["\\:baggage_claim:"] = {["character"] = "🛄", ["name"] = "Baggage Claim"},
     ["\\:left_luggage:"] = {["character"] = "🛅", ["name"] = "Left Luggage"},
 }
-return substitution_data
+return substitutions

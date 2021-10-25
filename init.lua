@@ -2,7 +2,7 @@
 local core = require "core"
 local syntax = require "core.syntax"
 local autocomplete = require "plugins.autocomplete"
-local substitutions = require "plugins.language_julia.substitution_data"
+local substitutions = require "plugins.language_julia.substitutions"
 
 local patterns = require "plugins.language_julia.patterns"
 
