@@ -45,9 +45,9 @@ local autocomplete_items = {}
 
 for name, data in pairs(substitutions) do
     autocomplete_items[name] = {
-        ["info"] = data["character"],
-        ["desc"] = data["name"],
-        ["onselect"] = substitute_symbol
+        info = data["character"],
+        desc = data["name"],
+        onselect = substitute_symbol
     }
 end
 
