@@ -17,13 +17,11 @@ local symbols = {
     ["global"] = "keyword",
     ["if"] = "keyword",
     ["import"] = "keyword",
-    ["Inf"] = "keyword",
     ["let"] = "keyword",
     ["local"] = "keyword",
     ["macro"] = "keyword",
     ["module"] = "keyword",
     ["mutable%s+struct"] = "keyword",
-    ["NaN"] = "keyword",
     ["primitive%s+type"] = "keyword",
     ["quote"] = "keyword",
     ["return"] = "keyword",
@@ -35,7 +33,9 @@ local symbols = {
     ["true"] = "literal",
     ["false"] = "literal",
     ["nothing"] = "literal",
-    ["missing"] = "literal"
+    ["missing"] = "literal",
+    ["NaN"] = "literal",
+    ["Inf"] = "literal"
 }
 
 return symbols
