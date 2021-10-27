@@ -1,9 +1,11 @@
 -- mod-version:2 -- lite-xl 2.0
 local core = require "core"
 local syntax = require "core.syntax"
+
 local autocomplete = require "plugins.autocomplete"
-local substitutions = require "plugins.language_julia.substitutions"
+
 local patterns = require "plugins.language_julia.patterns"
+local substitutions = require "plugins.language_julia.substitutions"
 local symbols = require "plugins.language_julia.symbols"
 
 -- Syntax highlighting
