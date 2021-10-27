@@ -16,9 +16,9 @@ local patterns = {
     { pattern = {"[brv]?\"", "\"", "\\"}, type = "string" }, -- String
     { pattern = "'\\[uU].+'", type = "string" }, -- Character with escape string
     { pattern = "'.'", type = "string" }, -- Character
-    { pattern = "[%a_][%w_]*!?%f[({]", type = "function" }, -- Function
-    { pattern = "@[%a_][%w_]*!?", type = "function" }, -- Macro call
-    { pattern = "@?[%a_][%w_]*!?", type = "symbol" },
+    { pattern = "%S+!?%f[({]", type = "function" }, -- Function
+    { pattern = "@%S+!?", type = "function" }, -- Macro call
+    { pattern = "%S+!?", type = "symbol" },
 }
 
 return patterns
