@@ -13,7 +13,7 @@ local patterns = {
     { pattern = "%-?%d+%.?%d*", type = "number" }, -- Decimal number with numbers before decimal point
     { pattern = "%-?%d+", type = "number" }, -- Decimal number without decimal point
     { pattern = {"[brv]?\"\"\"", "\"\"\"[^\"]"}, type = "string" }, -- Multiline string
-    { pattern = {"[brv]?\"", "\"", "\\"}, type = "string" }, -- String
+    { pattern = {"[brv]?\"", "\"" }, type = "string" }, -- String
     { pattern = "'\\[uU].+'", type = "string" }, -- Character with escape string
     { pattern = "'.'", type = "string" }, -- Character
     { pattern = "%S+!?%f[({]", type = "function" }, -- Function

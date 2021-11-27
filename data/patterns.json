@@ -1,0 +1,20 @@
+[
+  { "name": "Multiline comment", "pattern": ["#=", "=#"], "type": "comment" },
+  { "name": "Single line comment", "pattern": ["#", "\\n"], "type": "comment" },
+  { "name": "Typehint", "pattern": "::%f[%S]", "type": "operator" },
+  { "name": "Operator", "regex": "operators_regex_pattern", "type": "operator" },
+  { "name": "Symbol", "pattern": "%f[:]:%w+", "type": "string" },
+  { "name": "Binary number", "pattern": "%-?0b[01]+", "type": "number" },
+  { "name": "Hex number", "pattern": "%-?0x[%dabcdef]+", "type": "number" },
+  { "name": "Octal number", "pattern": "%-?0o[0-7]+", "type": "number" },
+  { "name": "Decimal number with numbers after decimal point", "pattern": "%-?%d*%.?%d+", "type": "number" },
+  { "name": "Decimal number with numbers before decimal point", "pattern": "%-?%d+%.?%d*", "type": "number" },
+  { "name": "Decimal number without decimal point", "pattern": "%-?%d+", "type": "number" },
+  { "name": "Docstring", "pattern": ["[brv]?\\\"\\\"\\\"", "\\\"\\\"\\\"[^\\\"]"], "type": "string" },
+  { "name": "String", "pattern": ["[brv]?\\\"", "\\\""], "type": "string" },
+  { "name": "Character with escape string", "pattern": "'\\\\[uU].+'", "type": "string" },
+  { "name": "Character", "pattern": "'.'", "type": "string" },
+  { "name": "Function", "pattern": "%S+!?%f[({]", "type": "function" },
+  { "name": "Macro call", "pattern": "@%S+!?", "type": "function" },
+  { "pattern": "%S+!?", "type": "symbol" }
+]
